@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Flask App
 
 on:
   push:
@@ -6,21 +6,24 @@ on:
       - main  # Change this to your main branch name
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x  # Use your preferred Python version
         
-    - name: Build and deploy
+    - name: Install dependencies
       run: |
-        pip install mkdocs  # Install your static site generator if needed
-        mkdocs build  # Build your site using the generator
-        echo "www.example.com" > ./site/CNAME
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Actions"
-        git add .
-        git commit -m "Deploy to GitHub Pages"
-        git push origin main
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Deploy Flask App
+      run: |
+        pip install gunicorn  # Install Gunicorn as a production server
+        gunicorn -w 4 -b 0.0.0.0:$PORT app:app
