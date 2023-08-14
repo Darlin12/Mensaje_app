@@ -26,4 +26,4 @@ jobs:
     - name: Deploy Flask App
       run: |
         pip install gunicorn  # Install Gunicorn as a production server
-        gunicorn -w 4 -b 0.0.0.0:$PORT app:app
+        gunicorn -w 4 -b 0.0.0.0:9998 app:app
